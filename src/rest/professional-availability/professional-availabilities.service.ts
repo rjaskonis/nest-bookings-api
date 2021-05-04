@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { ProfessionalAvailability } from './professional-availability.entity';
@@ -79,5 +79,13 @@ export class ProfessionalAvailabilitiesService {
         });
 
         return isValidTimeRange;
+    }
+
+    async deleteAvailability(id: number) {
+        const availability = await this.availabilityRepository.findOne(id);
+
+        if (!availability) throw new NotFoundException('Availability not found');
+
+        return this.availabilityRepository.delete(availability);
     }
 }

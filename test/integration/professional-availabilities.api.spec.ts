@@ -176,6 +176,18 @@ describe('ProfessionalAvailabilitiesController (e2e)', () => {
         expect(response.status).toBeGreaterThanOrEqual(400);
     });
 
+    test('DELETE /professional-availabilities/:id', async () => {
+        const { body: createdAvailability } = await request(app.getHttpServer())
+            .post('/professional-availabilities')
+            .send({ professional: professional.id, weekday: 1, fromTime: '07:00', toTime: '10:00' });
+
+        const updateResponse = await request(app.getHttpServer()).delete(`/professional-availabilities/${createdAvailability.id}`);
+
+        console.log(updateResponse.text);
+
+        expect(updateResponse.status).toBe(204);
+    });
+
     afterAll((done) => {
         app.close();
         done();

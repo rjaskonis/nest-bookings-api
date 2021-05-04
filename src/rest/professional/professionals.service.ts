@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Professional } from './professional.entity';
@@ -25,10 +25,18 @@ export class ProfessionalsService {
     async updateProfessional(id: number, updateProfessionalDto: UpdateProfessionalDto) {
         const professional = await this.professionalsRepository.findOne(id);
 
-        if (!professional) throw new BadRequestException('Professional not found');
+        if (!professional) throw new NotFoundException('Professional not found');
 
         const updatedProfessional = { ...professional, ...updateProfessionalDto };
 
         return this.professionalsRepository.save(updatedProfessional);
+    }
+
+    async deleteProfessional(id: number) {
+        const professional = await this.professionalsRepository.findOne(id);
+
+        if (!professional) throw new NotFoundException('Professional not found');
+
+        return this.professionalsRepository.delete(professional);
     }
 }

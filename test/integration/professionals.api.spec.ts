@@ -74,6 +74,16 @@ describe('ProfessionalsController (e2e)', () => {
         expect(updateResponse.status).toBe(400);
     });
 
+    test('DELETE /professionals/:id', async () => {
+        const { body: createdProfessional } = await request(app.getHttpServer()).post('/professionals').send({ name: 'Renne', title: 'IT Guy' });
+
+        const deleteResponse = await request(app.getHttpServer()).delete(`/professionals/${createdProfessional.id}`);
+
+        console.log(deleteResponse.text);
+
+        expect(deleteResponse.status).toBe(204);
+    });
+
     afterAll((done) => {
         app.close();
         done();

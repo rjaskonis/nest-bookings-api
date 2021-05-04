@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, NotFoundException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { Professional } from './professional.entity';
 import { ProfessionalsService } from './professionals.service';
 import { CreateProfessionalDto } from './dto/create-professional.dto';
@@ -24,5 +24,13 @@ export class ProfessionalsController {
         @Body() updateProfessionalDto: UpdateProfessionalDto,
     ): Promise<Professional> | Promise<NotFoundException> {
         return this.professionalService.updateProfessional(id, updateProfessionalDto);
+    }
+
+    @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    deleteProfessional(
+        @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
+    ): Promise<any> | Promise<NotFoundException> {
+        return this.professionalService.deleteProfessional(id);
     }
 }
