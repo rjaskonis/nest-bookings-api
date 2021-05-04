@@ -1,4 +1,4 @@
-import { isTimeEqualOrAfterAnotherTime } from '@/rest/utils/time';
+import { isTimeEqualOrAfterAnotherTime } from '@rest/utils/time';
 
 describe('Time range check', () => {
     test('time is after the other time', () => {

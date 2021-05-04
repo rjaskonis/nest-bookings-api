@@ -4,7 +4,7 @@ import { Not, Repository } from 'typeorm';
 import { ProfessionalAvailability } from './professional-availability.entity';
 import { CreateProfessionalAvailabilityDto } from './dto/create-professional-availability.dto';
 import { UpdateProfessionalAvailabilityDto } from './dto/update-professional-availability.dto';
-import { Professional } from '@rest/professional/professional.entity';
+import { Professional } from '@rest/professionals/professional.entity';
 import { isTimeInTimeRange } from '../utils/time';
 
 @Injectable()

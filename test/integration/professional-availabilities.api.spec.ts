@@ -3,9 +3,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { Connection, createConnection } from 'typeorm';
 import { AppModule } from '@rest/app.module';
-import { ProfessionalsController } from '@rest/professional/professionals.controller';
-import { ProfessionalAvailabilitiesController } from '@rest/professional-availability/professional-availabilities.controller';
-import { Professional } from '@/rest/professional/professional.entity';
+import { Professional } from '@/rest/professionals/professional.entity';
+import { ProfessionalsController } from '@rest/professionals/professionals.controller';
+import { ProfessionalAvailabilitiesController } from '@rest/professional-availabilities/professional-availabilities.controller';
 
 describe('ProfessionalAvailabilitiesController (e2e)', () => {
     let app: INestApplication;

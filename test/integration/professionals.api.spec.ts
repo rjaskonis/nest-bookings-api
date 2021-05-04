@@ -3,7 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { Connection, createConnection } from 'typeorm';
 import { AppModule } from '@rest/app.module';
-import { ProfessionalsController } from '@rest/professional/professionals.controller';
+import { ProfessionalsController } from '@rest/professionals/professionals.controller';
 
 describe('ProfessionalsController (e2e)', () => {
     let app: INestApplication;
@@ -64,14 +64,14 @@ describe('ProfessionalsController (e2e)', () => {
         expect(updateResponse.status).toBe(200);
     });
 
-    it('should return 400 error on PUT /professionals/:id - professional with specified ID not found', async () => {
+    it('should return 404 error on PUT /professionals/:id - professional with specified ID not found', async () => {
         const { body: createdProfessional } = await request(app.getHttpServer()).post('/professionals').send({ name: 'Renne', title: 'IT Guy' });
 
         const updateResponse = await request(app.getHttpServer()).put(`/professionals/0`).send({ name: 'Jaskonis' });
 
         // console.log(updateResponse.status, updateResponse.body.message);
 
-        expect(updateResponse.status).toBe(400);
+        expect(updateResponse.status).toBe(404);
     });
 
     test('DELETE /professionals/:id', async () => {

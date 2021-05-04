@@ -1,5 +1,5 @@
-import { ProfessionalAvailability } from '@/rest/professional-availability/professional-availability.entity';
-import { Professional } from '@/rest/professional/professional.entity';
+import { Professional } from '@rest/professionals/professional.entity';
+import { ProfessionalAvailability } from '@rest/professional-availabilities/professional-availability.entity';
 import { Connection, createConnection, Repository } from 'typeorm';
 
 describe('Testing database operations', () => {

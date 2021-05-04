@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Professional } from '../professional/professional.entity';
+import { Professional } from '@rest/professionals/professional.entity';
 
 @Entity({ name: 'professional_availabilities' })
 export class ProfessionalAvailability {
