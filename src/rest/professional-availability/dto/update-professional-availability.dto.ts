@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
-import { IsInt, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
+import { IsInt, IsOptional, ValidateIf } from 'class-validator';
 import { CreateProfessionalAvailabilityDto } from './create-professional-availability.dto';
-import { validateTimeFormat } from '@/rest/utils/validate-time';
+import { validateTimeFormat } from '@/rest/utils/time';
 
 export class UpdateProfessionalAvailabilityDto {
     @IsOptional()
@@ -29,7 +29,11 @@ export class UpdateProfessionalAvailabilityDto {
     weekday: number;
 
     @ValidateIf((availability: CreateProfessionalAvailabilityDto) => {
+        if (availability.fromTime && !availability.toTime)
+            throw new BadRequestException("Shall not set 'fromTime' without setting 'toTime' as well");
+
         if (!availability.fromTime) return true;
+
         if (validateTimeFormat(availability.fromTime)) return true;
 
         throw new BadRequestException("Invalid time format for 'fromTime'");
@@ -38,7 +42,11 @@ export class UpdateProfessionalAvailabilityDto {
     fromTime: string;
 
     @ValidateIf((availability: CreateProfessionalAvailabilityDto) => {
+        if (availability.toTime && !availability.fromTime)
+            throw new BadRequestException("Shall not set 'toTime' without setting 'fromTime' as well");
+
         if (!availability.toTime) return true;
+
         if (validateTimeFormat(availability.toTime)) return true;
 
         throw new BadRequestException("Invalid time format for 'toTime'");
