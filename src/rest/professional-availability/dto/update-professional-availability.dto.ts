@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { IsInt, IsOptional, ValidateIf } from 'class-validator';
 import { CreateProfessionalAvailabilityDto } from './create-professional-availability.dto';
-import { validateTimeFormat } from '@/rest/utils/time';
+import { isTimeEqualOrAfterAnotherTime, validateTimeFormat } from '@rest/utils/time';
 
 export class UpdateProfessionalAvailabilityDto {
     @IsOptional()
@@ -34,9 +34,12 @@ export class UpdateProfessionalAvailabilityDto {
 
         if (!availability.fromTime) return true;
 
-        if (validateTimeFormat(availability.fromTime)) return true;
+        if (!validateTimeFormat(availability.fromTime)) throw new BadRequestException("Invalid time format for 'fromTime'");
 
-        throw new BadRequestException("Invalid time format for 'fromTime'");
+        if (validateTimeFormat(availability.toTime) && isTimeEqualOrAfterAnotherTime(availability.fromTime, availability.toTime))
+            throw new BadRequestException("'fromTime' must be before 'toTime'");
+
+        return true;
     })
     @ApiProperty({ type: Number, required: false })
     fromTime: string;
@@ -47,9 +50,9 @@ export class UpdateProfessionalAvailabilityDto {
 
         if (!availability.toTime) return true;
 
-        if (validateTimeFormat(availability.toTime)) return true;
+        if (!validateTimeFormat(availability.toTime)) throw new BadRequestException("Invalid time format for 'toTime'");
 
-        throw new BadRequestException("Invalid time format for 'toTime'");
+        return true;
     })
     @ApiProperty({ type: Number, required: false })
     toTime: string;
