@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { Connection, createConnection } from 'typeorm';
 import { AppModule } from '@rest/app.module';
 import { ProfessionalsController } from '@rest/professional/professionals.controller';
