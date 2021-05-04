@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { ProfessionalAvailability } from './professional-availability.entity';
 import { CreateProfessionalAvailabilityDto } from './dto/create-professional-availability.dto';
 import { UpdateProfessionalAvailabilityDto } from './dto/update-professional-availability.dto';
 import { Professional } from '@rest/professional/professional.entity';
+import { isTimeInTimeRange } from '../utils/time';
 
 @Injectable()
 export class ProfessionalAvailabilitiesService {
@@ -29,6 +30,10 @@ export class ProfessionalAvailabilitiesService {
         availability.fromTime = createProfessionalAvailabilityDto.fromTime;
         availability.toTime = createProfessionalAvailabilityDto.toTime;
 
+        const isValidTimeRangeAvailability = await this.validateTimeRangeAvailability(availability);
+
+        if (!isValidTimeRangeAvailability) throw new BadRequestException('Time range already defined');
+
         return this.availabilityRepository.save(availability);
     }
 
@@ -47,6 +52,32 @@ export class ProfessionalAvailabilitiesService {
 
         const updatedProfessionalAvailabilityDto: any = { ...availability, ...updateProfessionalAvailabilityDto };
 
+        const isValidTimeRangeAvailability = await this.validateTimeRangeAvailability(updatedProfessionalAvailabilityDto);
+
+        if (!isValidTimeRangeAvailability) throw new BadRequestException('Time range already defined');
+
         return this.availabilityRepository.save(updatedProfessionalAvailabilityDto);
+    }
+
+    private async validateTimeRangeAvailability(newAvailability: ProfessionalAvailability): Promise<boolean> {
+        const weekdayTimeRangeRegistries: ProfessionalAvailability[] = await this.availabilityRepository.find({
+            where: newAvailability.id ? { id: Not(newAvailability.id), weekday: newAvailability.weekday } : { weekday: newAvailability.weekday },
+        });
+
+        if (!weekdayTimeRangeRegistries.length) return true;
+
+        let isValidTimeRange = true;
+
+        weekdayTimeRangeRegistries.forEach((registeredAvailability) => {
+            if (
+                isTimeInTimeRange(newAvailability.fromTime, registeredAvailability.fromTime, registeredAvailability.toTime) ||
+                isTimeInTimeRange(newAvailability.toTime, registeredAvailability.fromTime, registeredAvailability.toTime) ||
+                isTimeInTimeRange(registeredAvailability.fromTime, newAvailability.fromTime, newAvailability.toTime) ||
+                isTimeInTimeRange(registeredAvailability.toTime, newAvailability.fromTime, newAvailability.toTime)
+            )
+                isValidTimeRange = false;
+        });
+
+        return isValidTimeRange;
     }
 }
