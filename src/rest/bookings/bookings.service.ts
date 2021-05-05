@@ -74,14 +74,15 @@ export class BookingsService {
 
         if (!professional.availabilities.length) return false;
 
-        professional.availabilities
-            .filter((availability) => availability.weekday == booking.datetime.getDay())
-            .forEach((availability) => {
-                const maxTimeToSchedule = addTimeToTime(availability.toTime, -1, 'hour');
+        const availabilitiesInDayOfWeek = professional.availabilities.filter((availability) => availability.weekday == booking.datetime.getDay());
 
-                if (!isTimeInTimeRange(parseDateToTimeString(booking.datetime), availability.fromTime, maxTimeToSchedule))
-                    isSlotAvailable = false;
-            });
+        if (!availabilitiesInDayOfWeek.length) return false;
+
+        availabilitiesInDayOfWeek.forEach((availability) => {
+            const maxTimeToSchedule = addTimeToTime(availability.toTime, -1, 'hour');
+
+            if (!isTimeInTimeRange(parseDateToTimeString(booking.datetime), availability.fromTime, maxTimeToSchedule)) isSlotAvailable = false;
+        });
 
         if (
             professional.bookings.filter((registeredBooking) => {
