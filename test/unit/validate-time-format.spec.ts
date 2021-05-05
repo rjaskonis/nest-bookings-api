@@ -1,4 +1,4 @@
-import { validateTimeFormat } from '@rest/utils/time';
+import { validateTimeFormat } from '@/rest/utils/datetime';
 
 describe('Time format validation', () => {
     it('should validate input string in time format', () => {

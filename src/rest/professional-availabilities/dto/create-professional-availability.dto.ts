@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, ValidateIf } from 'class-validator';
-import { isTimeEqualOrAfterAnotherTime, validateTimeFormat } from '@rest/utils/time';
+import { isTimeEqualOrAfterAnotherTime, validateTimeFormat } from '@rest/utils/datetime';
 
 export class CreateProfessionalAvailabilityDto {
     @IsNotEmpty()

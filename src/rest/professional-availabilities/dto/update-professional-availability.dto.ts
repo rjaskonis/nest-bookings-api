@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { IsInt, IsOptional, ValidateIf } from 'class-validator';
 import { CreateProfessionalAvailabilityDto } from './create-professional-availability.dto';
-import { isTimeEqualOrAfterAnotherTime, validateTimeFormat } from '@rest/utils/time';
+import { isTimeEqualOrAfterAnotherTime, validateTimeFormat } from '@rest/utils/datetime';
 
 export class UpdateProfessionalAvailabilityDto {
     @IsOptional()

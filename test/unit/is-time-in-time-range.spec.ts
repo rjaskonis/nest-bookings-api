@@ -1,4 +1,4 @@
-import { isTimeInTimeRange } from '@rest/utils/time';
+import { isTimeInTimeRange } from '@rest/utils/datetime';
 
 describe('Time range check', () => {
     test('time is not in time range', () => {
