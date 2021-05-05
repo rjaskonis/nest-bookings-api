@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { IsInt, IsOptional, ValidateIf } from 'class-validator';
-import { validateTimeFormat } from '@/rest/utils/time';
+import { validateDatetimeFormat, validateDatetimeSpecification, validateTimeFormat } from '@rest/utils/datetime';
 
 export class UpdateBookingDto {
     @IsOptional()
@@ -19,25 +19,16 @@ export class UpdateBookingDto {
     customerName: string;
 
     @IsOptional()
-    @IsInt()
     @ValidateIf((booking: UpdateBookingDto) => {
-        if (!booking.weekday) return;
+        if (!booking.datetime) return true;
 
-        const weekdays = [0, 1, 2, 3, 4, 5, 6]; // 0 - sunday, 1 - monday, 2 - tuesday,... (& so on)
-        if (weekdays.includes(booking.weekday)) return true;
+        if (!validateDatetimeFormat(booking.datetime)) throw new BadRequestException("Invalid datetime format for 'datetime'");
 
-        throw new BadRequestException('Invalid weekday. Should be between 0 and 6');
-    })
-    @ApiProperty({ type: Number, required: false })
-    weekday: number;
-
-    @ValidateIf((booking: UpdateBookingDto) => {
-        if (!booking.time) return true;
-
-        if (!validateTimeFormat(booking.time)) throw new BadRequestException("Invalid time format for 'time'");
+        if (!validateDatetimeSpecification(booking.datetime))
+            throw new BadRequestException('Invalid datetime specification (only able to define half or full hour)');
 
         return true;
     })
     @ApiProperty({ type: Number, required: false })
-    time: string;
+    datetime: string;
 }

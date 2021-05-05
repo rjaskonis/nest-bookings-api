@@ -23,7 +23,6 @@ export class BookingsController {
         @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
         @Body() updateBookingDto: UpdateBookingDto,
     ): Promise<Booking> | Promise<NotFoundException> {
-        console.log('so far so good');
         return this.bookingsService.updateBooking(id, updateBookingDto);
     }
 
