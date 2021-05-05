@@ -61,7 +61,9 @@ export class ProfessionalAvailabilitiesService {
 
     private async validateTimeRangeAvailability(newAvailability: ProfessionalAvailability): Promise<boolean> {
         const weekdayTimeRangeRegistries: ProfessionalAvailability[] = await this.availabilityRepository.find({
-            where: newAvailability.id ? { id: Not(newAvailability.id), weekday: newAvailability.weekday } : { weekday: newAvailability.weekday },
+            where: newAvailability.id
+                ? { id: Not(newAvailability.id), professional: newAvailability.professional, weekday: newAvailability.weekday }
+                : { professional: newAvailability.professional, weekday: newAvailability.weekday },
         });
 
         if (!weekdayTimeRangeRegistries.length) return true;
