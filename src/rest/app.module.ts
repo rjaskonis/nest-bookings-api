@@ -5,9 +5,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProfessionalsModule } from './professionals/professionals.module';
 import { ProfessionalAvailabilitiesModule } from './professional-availabilities/professional-availabilities.module';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
-    imports: [TypeOrmModule.forRoot(settings), ProfessionalsModule, ProfessionalAvailabilitiesModule],
+    imports: [TypeOrmModule.forRoot(settings), ProfessionalsModule, ProfessionalAvailabilitiesModule, BookingsModule],
     controllers: [AppController],
     providers: [AppService],
 })
