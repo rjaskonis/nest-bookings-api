@@ -200,7 +200,7 @@ describe('ProfessionalAvailabilitiesController (e2e)', () => {
             database: './my.db',
             synchronize: true,
             logging: false,
-            entities: ['rc/**/*.entity.ts'],
+            entities: ['src/**/*.entity.ts'],
         });
 
         await connection.manager.query('DELETE FROM professional_availabilities');
@@ -216,7 +216,7 @@ describe('ProfessionalAvailabilitiesController (e2e)', () => {
             database: './my.db',
             synchronize: true,
             logging: false,
-            entities: ['rc/**/*.entity.ts'],
+            entities: ['src/**/*.entity.ts'],
         });
 
         await connection.manager.query('DELETE FROM professional_availabilities');
