@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { Professional } from './professional.entity';
 import { ProfessionalsService } from './professionals.service';
 import { CreateProfessionalDto } from './dto/create-professional.dto';
 import { UpdateProfessionalDto } from './dto/update-professional.dto';
+import { GetProfessionalsSlotsDto } from './dto/get-professionals-slots.dto';
 
 @Controller('professionals')
 export class ProfessionalsController {
@@ -11,6 +12,13 @@ export class ProfessionalsController {
     @Get()
     async getProfessionals(): Promise<Professional[]> {
         return this.professionalService.getProfessionals();
+    }
+
+    @Get('slots')
+    async getProfessionalsSlots(@Query() getProfessionalsSlotsDto: GetProfessionalsSlotsDto): Promise<any[]> {
+        console.log(getProfessionalsSlotsDto);
+
+        return this.professionalService.getProfessionalsSlots(getProfessionalsSlotsDto);
     }
 
     @Post()

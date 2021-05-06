@@ -4,6 +4,8 @@ import request from 'supertest';
 import { Connection, createConnection } from 'typeorm';
 import { AppModule } from '@rest/app.module';
 import { ProfessionalsController } from '@rest/professionals/professionals.controller';
+import { ProfessionalAvailabilitiesController } from '@/rest/professional-availabilities/professional-availabilities.controller';
+import { BookingsController } from '@/rest/bookings/bookings.controller';
 
 describe('ProfessionalsController (e2e)', () => {
     let app: INestApplication;
@@ -84,10 +86,78 @@ describe('ProfessionalsController (e2e)', () => {
         expect(deleteResponse.status).toBe(204);
     });
 
+    test.only('GET /professionals/slots', async () => {
+        await populateData();
+
+        const response = await request(app.getHttpServer()).get('/professionals/slots');
+        // const response = await request(app.getHttpServer()).get('/professionals/slots').query({ fromDate: '2021-05-01', toDate: '2021-05-07' });
+
+        console.log(response.body);
+
+        expect(response.status).toBe(200);
+        expect(response.body.constructor).toBe(Array);
+        // return request(app.getHttpServer()).get('/professionals').expect(200);
+    });
+
     afterAll((done) => {
         app.close();
         done();
     });
+
+    async function populateData() {
+        const professionalsController = app.get<ProfessionalsController>(ProfessionalsController);
+        const professionalAvailabilitiesController = app.get<ProfessionalAvailabilitiesController>(ProfessionalAvailabilitiesController);
+        const bookingsController = app.get<BookingsController>(BookingsController);
+
+        const professional1 = await professionalsController.addProfessional({ name: 'Renne Jaskonis', title: 'IT Guy' });
+        const professional2 = await professionalsController.addProfessional({ name: 'Some other guy 1', title: 'Psychologist' });
+        const professional3 = await professionalsController.addProfessional({ name: 'Some other guy 2', title: 'Psychologist' });
+
+        await professionalAvailabilitiesController.addAvailability({
+            professional: professional1.id,
+            weekday: 1,
+            fromTime: '08:00',
+            toTime: '12:00',
+        });
+        await professionalAvailabilitiesController.addAvailability({
+            professional: professional1.id,
+            weekday: 2,
+            fromTime: '08:00',
+            toTime: '12:00',
+        });
+        await professionalAvailabilitiesController.addAvailability({
+            professional: professional2.id,
+            weekday: 3,
+            fromTime: '07:00',
+            toTime: '13:00',
+        });
+
+        await professionalAvailabilitiesController.addAvailability({
+            professional: professional2.id,
+            weekday: 4,
+            fromTime: '07:00',
+            toTime: '13:00',
+        });
+        await professionalAvailabilitiesController.addAvailability({
+            professional: professional3.id,
+            weekday: 2,
+            fromTime: '10:00',
+            toTime: '18:00',
+        });
+        await professionalAvailabilitiesController.addAvailability({
+            professional: professional3.id,
+            weekday: 5,
+            fromTime: '14:00',
+            toTime: '20:00',
+        });
+
+        await bookingsController.addBooking({ professional: professional1.id, customerName: 'Hugh Laurie', datetime: '2021-05-03 11:00' });
+        await bookingsController.addBooking({ professional: professional1.id, customerName: 'Tom Jones', datetime: '2021-05-03 09:00' });
+        await bookingsController.addBooking({ professional: professional2.id, customerName: 'Tina Turner', datetime: '2021-05-05 11:00' });
+        await bookingsController.addBooking({ professional: professional2.id, customerName: 'Chris Redfield', datetime: '2021-05-06 07:00' });
+        await bookingsController.addBooking({ professional: professional3.id, customerName: 'Mary Jane', datetime: '2021-05-04 13:00' });
+        await bookingsController.addBooking({ professional: professional3.id, customerName: 'Amelia Earhart', datetime: '2021-05-07 18:00' });
+    }
 
     async function clearTableData() {
         const connection: Connection = await createConnection({
@@ -99,6 +169,7 @@ describe('ProfessionalsController (e2e)', () => {
             entities: ['src/**/*.entity.ts'],
         });
 
+        await connection.manager.query('DELETE FROM bookings');
         await connection.manager.query('DELETE FROM professional_availabilities');
         await connection.manager.query('DELETE FROM professionals');
 
