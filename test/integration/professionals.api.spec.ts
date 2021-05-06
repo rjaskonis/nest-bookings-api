@@ -86,7 +86,7 @@ describe('ProfessionalsController (e2e)', () => {
         expect(deleteResponse.status).toBe(204);
     });
 
-    test.only('GET /professionals/slots', async () => {
+    test('GET /professionals/slots', async () => {
         await populateData();
 
         const response = await request(app.getHttpServer()).get('/professionals/slots');
